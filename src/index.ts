@@ -17,3 +17,4 @@ export * from './lib/interactions/shared';
 export * from './lib/interactions/context-menu/decorators';
 export * from './lib/interactions/chat-input/decorators';
 export * from './lib/types/CommandTypes';
+export { container } from '@sapphire/pieces';
