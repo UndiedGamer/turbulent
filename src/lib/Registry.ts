@@ -1,7 +1,8 @@
 import { REST } from '@discordjs/rest';
 import { container } from '@sapphire/pieces';
-import { Routes } from 'discord-api-types/v10';
-import { chatInputCommandRegistry } from './interactions/shared';
+import { Routes, type RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types/v10';
+import { chatInputCommandRegistry, contextMenuCommandRegistry, restrictedGuildIdRegistry } from './interactions/shared';
+import { flattenIterableOfArrays } from './utils/generators';
 
 export class Registry {
 	public clientId: string;
@@ -20,5 +21,12 @@ export class Registry {
 		} catch (error) {
 			console.error(error);
 		}
+	}
+
+	public get globalCommands(): RESTPostAPIApplicationCommandsJSONBody[] {
+		return [
+			...chatInputCommandRegistry.filter((_, command) => !restrictedGuildIdRegistry.get(command)?.length).values(),
+			...flattenIterableOfArrays(contextMenuCommandRegistry.filter((_, command) => !restrictedGuildIdRegistry.get(command)?.length).values())
+		];
 	}
 }

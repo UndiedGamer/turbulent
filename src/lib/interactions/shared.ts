@@ -3,6 +3,14 @@ import type { RESTPostAPIChatInputApplicationCommandsJSONBody, RESTPostAPIContex
 import type { Command } from '../structures/Command';
 import type { NonNullObject } from '@sapphire/utilities';
 
+export const restrictedGuildIdRegistry = new Collection<typeof Command<Command.Options>, readonly string[]>();
+
+export function RestrictGuildIds<Options extends Command.Options = Command.Options>(guildIds: readonly string[]) {
+	return function decorate(target: typeof Command<Options>) {
+		restrictedGuildIdRegistry.set(target, guildIds);
+	};
+}
+
 export const chatInputCommandRegistry = new Collection<typeof Command<Command.Options>, RESTPostAPIChatInputApplicationCommandsJSONBody>();
 
 export const contextMenuCommandRegistry = new Collection<typeof Command<Command.Options>, RESTPostAPIContextMenuApplicationCommandsJSONBody[]>();
