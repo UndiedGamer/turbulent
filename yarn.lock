@@ -595,9 +595,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turbulent/framework@workspace:.":
+"@spectera/framework@workspace:.":
   version: 0.0.0-use.local
-  resolution: "@turbulent/framework@workspace:."
+  resolution: "@spectera/framework@workspace:."
   dependencies:
     "@discordjs/builders": "npm:^1.7.0"
     "@discordjs/collection": "npm:^2.0.0"
