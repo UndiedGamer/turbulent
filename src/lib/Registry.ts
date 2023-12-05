@@ -16,7 +16,7 @@ export class Registry {
 	public async register() {
 		container.rest.setToken(this.#token);
 		try {
-			await container.rest.put(Routes.applicationCommands(this.clientId), { body: chatInputCommandRegistry });
+			await container.rest.put(Routes.applicationCommands(this.clientId), { body: this.globalCommands });
 			console.log('Successfully registered application commands.');
 		} catch (error) {
 			console.error(error);
