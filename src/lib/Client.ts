@@ -17,7 +17,7 @@ export class Client {
 
 	public listen() {
 		this.router.get('/', (_request: Request, env: typeof process.env) => {
-			return new Response(`${env.DISCORD_APPLICATION_ID}`);
+			return () => new Response(`${env.DISCORD_APPLICATION_ID}`);
 		});
 		this.router.post('/', async (request: Request) => {
 			return this.handleInteraction(request);
@@ -35,15 +35,16 @@ export class Client {
 
 	public async handleInteraction(request: Request) {
 		const { interaction, isValid } = await this.verifyRequest(request);
-		if (!isValid || !interaction) return new Response('Bad request signature', { status: 401 });
+		if (!isValid || !interaction) return () => new Response('Bad request signature', { status: 401 });
 		switch (interaction.type) {
 			case InteractionType.Ping:
-				return new Response(JSON.stringify({ type: InteractionResponseType.Pong }), {
-					status: 200,
-					headers: {
-						'Content-Type': 'application/json'
-					}
-				});
+				return () =>
+					new Response(JSON.stringify({ type: InteractionResponseType.Pong }), {
+						status: 200,
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					});
 			case InteractionType.ApplicationCommand:
 				return container.stores.get('commands').runApplicationCommand(interaction);
 			case InteractionType.MessageComponent:
