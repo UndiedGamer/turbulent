@@ -15,13 +15,15 @@ export class CommandStore extends Store<Command, 'commands'> {
 			interaction.data.type === ApplicationCommandType.ChatInput
 				? this.get(interaction.data.name)
 				: this.contextMenuCommands.get(interaction.data.name);
-		if (!command) return () => new Response('Unknown command', { status: 404 });
+		if (!command) return new Response('Unknown command', { status: 404 });
 		const method = this.routeCommandMethodName(command, interaction.data);
-		if (!method) return () => new Response('Unknown method', { status: 404 });
+		if (!method) return new Response('Unknown method', { status: 404 });
 		const result = await Result.fromAsync(() => this.runMethod(command, method, interaction));
 		// implement listeners?
-		result.inspect((value) => console.log(value)).inspectErr((error) => console.error(error));
-		return () => new Response('Command successfully executed', { status: 200 });
+		let response: unknown;
+		result.inspect((value) => (response = value));
+		if (response instanceof Response) return response;
+		return new Response('Command successfully executed', { status: 200 });
 	}
 
 	private runMethod(command: Command, method: string, interaction: unknown) {
